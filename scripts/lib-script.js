@@ -12,6 +12,8 @@ const IMPORTS = './imports.js'
 
 const codeRE = /```\s*js([\s\S]*?)```/;
 
+const tagDatad = fs.readFileSync('tag_database','utf8');
+
 console.time('Lib');
 
 try {
@@ -32,9 +34,9 @@ try {
     const snippetData = fs.readFileSync(path.join(SNIPPETS_PATH, snippet.name), 'utf8')
     const snippetName = snippet.name.replace('.md', '');
 
-    const nodeOnly = ['readFileLines', 'JSONToFile'];
+    const category = tagDatad.slice(tagDatad.indexOf(snippetName) + snippetName.length+1).split('\n')[0].includes('node');
 
-    if (!nodeOnly.includes(snippetName)) {
+    if (!category) {
       const importData = fs.readFileSync(IMPORTS);
       fs.writeFileSync(IMPORTS, importData + `\nimport { ${snippetName} } from './temp/${snippetName}.js'`);
       exportStr += `${snippetName},`
